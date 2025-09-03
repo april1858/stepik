@@ -23,6 +23,7 @@ func main() {
 
 		if unicode.IsUpper(rune(line[0])) {
 			fmt.Println("error")
+			return
 		}
 
 		line = line[:len(line)-1]
@@ -48,5 +49,26 @@ func main() {
 
 	fmt.Println(comands)
 	fmt.Println(line)
-	fmt.Println(false == true)
+
+	answer := parse(comands, line)
+	fmt.Println(answer)
+}
+
+func parse(c map[string]bool, l string) bool {
+	answer := false
+	l = strings.ReplaceAll(l, " ", "")
+	switch {
+	case strings.Contains(l, "and"):
+		index := strings.Index(l, "and")
+		answer = c[l[:index]] && c[l[index+3:]]
+	case strings.Contains(l, "or"):
+		index := strings.Index(l, "or")
+		answer = c[l[:index]] || c[l[index+2:]]
+	case strings.Contains(l, "xor"):
+		index := strings.Index(l, "xor")
+		answer = c[l[:index]] != c[l[index+3:]]
+	case strings.Contains(l, "not"):
+		answer = !c[l[3:]]
+	}
+	return answer
 }
