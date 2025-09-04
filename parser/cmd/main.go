@@ -47,26 +47,40 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Ошибка при чтении ввода:", err)
 	}
 
-	fmt.Println(comands)
 	line = strings.ReplaceAll(line, " ", "")
-	fmt.Println(line)
-	n := 0
-	m := 0
-	for i, c := range line {
-		if c == '(' {
-			n++
-		}
-		if c == ')' {
-			m++
-		}
-		if n == m {
-			fmt.Printf("%c - %d", c, i)
-		}
 
-	}
+	fmt.Println(groups(line))
 
 	answer := one(comands, line)
 	fmt.Println(answer)
+}
+
+func groups(line string) (int, []int) {
+	sumL := 0
+	sumR := 0
+	group := 0
+	ind := 0
+	indexes := make([]int, 0)
+	for i, r := range line {
+		if r == '(' {
+			sumL++
+		}
+		if r == ')' {
+			sumR++
+		}
+		if sumL == sumR && sumL != 0 {
+			indexes = append(indexes, i)
+			ind = i
+			sumL = 0
+			sumR = 0
+			group++
+
+		}
+		if sumL == 1 && sumR == 0 && i > ind {
+			indexes = append(indexes, i)
+		}
+	}
+	return group, indexes
 }
 
 func one(c map[string]bool, l string) bool {
