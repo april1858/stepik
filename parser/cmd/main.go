@@ -15,14 +15,14 @@ func main() {
 	comands := make(map[string]bool)
 	var line string
 	for scanner.Scan() {
-		line = scanner.Text() // Получаем текущую строку
+		line = scanner.Text()
 
-		if !strings.Contains(line, ";") { // Проверяем, содержит ли строка ';'
+		if !strings.Contains(line, ";") {
 			break
 		}
 
 		if unicode.IsUpper(rune(line[0])) {
-			fmt.Println("error")
+			fmt.Println("[error]")
 			return
 		}
 
@@ -48,15 +48,30 @@ func main() {
 	}
 
 	fmt.Println(comands)
+	line = strings.ReplaceAll(line, " ", "")
 	fmt.Println(line)
+	n := 0
+	m := 0
+	for i, c := range line {
+		if c == '(' {
+			n++
+		}
+		if c == ')' {
+			m++
+		}
+		if n == m {
+			fmt.Printf("%c - %d", c, i)
+		}
 
-	answer := parse(comands, line)
+	}
+
+	answer := one(comands, line)
 	fmt.Println(answer)
 }
 
-func parse(c map[string]bool, l string) bool {
+func one(c map[string]bool, l string) bool {
 	answer := false
-	l = strings.ReplaceAll(l, " ", "")
+
 	switch {
 	case strings.Contains(l, "and"):
 		index := strings.Index(l, "and")
