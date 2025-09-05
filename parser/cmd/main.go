@@ -12,7 +12,7 @@ import (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin) // Создаем сканер для стандартного ввода
 
-	comands := make(map[string]bool)
+	vars := make(map[string]bool)
 	var line string
 	for scanner.Scan() {
 		line = scanner.Text()
@@ -38,7 +38,7 @@ func main() {
 			fmt.Println("parse bool ", err)
 		}
 
-		comands[parts[0]] = v
+		vars[parts[0]] = v
 
 	}
 
@@ -48,19 +48,21 @@ func main() {
 	}
 
 	line = strings.ReplaceAll(line, " ", "")
+	fmt.Println(line)
 
 	fmt.Println(groups(line))
 
-	answer := one(comands, line)
+	answer := one(vars, line)
 	fmt.Println(answer)
 }
 
-func groups(line string) (int, []int) {
+func groups(line string) (int, []int, string) {
 	sumL := 0
 	sumR := 0
 	group := 0
 	ind := 0
 	indexes := make([]int, 0)
+	op := ""
 	for i, r := range line {
 		if r == '(' {
 			sumL++
@@ -79,8 +81,11 @@ func groups(line string) (int, []int) {
 		if sumL == 1 && sumR == 0 && i > ind {
 			indexes = append(indexes, i)
 		}
+		if len(indexes) == 3 {
+			op = string(line[indexes[0]+1]) + string(line[indexes[0]+2]) + string(line[indexes[0]+3])
+		}
 	}
-	return group, indexes
+	return group, indexes, op
 }
 
 func one(c map[string]bool, l string) bool {
